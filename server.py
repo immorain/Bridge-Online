@@ -2,7 +2,7 @@ from flask import Flask,jsonify,request
 import random
 from flask_uuid import FlaskUUID
 import uuid
-
+import time
 
 class Card:
     def __init__(self, suit, rank):
@@ -69,10 +69,11 @@ def drawcards():
 def ready():
     global no_players
     random_uuid = uuid.uuid4()
-
+    players_info={}
+    players_info[str(random_uuid)] = {'name':request.json['name']}
     no_players[str(random_uuid)] = {'name':request.json['name']}
-
-    return jsonify(no_players)
+    print(no_players)
+    return jsonify(players_info)
 
 @app.route('/clear')
 def clear():
@@ -94,6 +95,7 @@ def start():
 
     for i in no_players:
         no_players[i]['hands'] = sorted(no_players[i]['hands'],key=suit_sort)
+
     return 'true'
 
 @app.route('/gethands/<uuid:id>')
@@ -103,6 +105,14 @@ def gethand(id):
         hand.append((str(i.rank),str(i.suit)))
 
     return hand
+
+# @app.route('/gamestatestart')
+# def gamestate():
+#     while True:
+#         for y, i in enumerate(no_players):
+#             print(f'player{i[name]} turn')
+#         time.sleep(10)
+#     return 'True'
 
 
 if __name__ == '__main__':
