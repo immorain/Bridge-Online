@@ -46,24 +46,24 @@ def treat_as_plain_text(response):
 
 @app.route('/')
 def test():
-    return 'Ian is fucking Fat'
+    return 'NULL'
 
-@app.route('/drawcards')
-def drawcards():
-    deck = Deck()
-    deck.shuffle()
-    hands = deck.deal(4,13)
-    dic={}
-    for z, i in enumerate(hands):
-        dic[f'Player{z + 1}'] = i
-    showstring=''
-    for i in dic:
-        sorted_hand = sorted(dic[i],key=suit_sort)
-        string = ''
-        for c in sorted_hand:
-            string += f'|{c}|'
-        showstring +=f'{i} hand: {string}\n'
-    return showstring
+# @app.route('/drawcards')
+# def drawcards():
+#     deck = Deck()
+#     deck.shuffle()
+#     hands = deck.deal(4,13)
+#     dic={}
+#     for z, i in enumerate(hands):
+#         dic[f'Player{z + 1}'] = i
+#     showstring=''
+#     for i in dic:
+#         sorted_hand = sorted(dic[i],key=suit_sort)
+#         string = ''
+#         for c in sorted_hand:
+#             string += f'|{c}|'
+#         showstring +=f'{i} hand: {string}\n'
+#     return showstring
 
 @app.route('/ready',methods = ['POST'])
 def ready():
@@ -106,13 +106,19 @@ def gethand(id):
 
     return hand
 
-# @app.route('/gamestatestart')
-# def gamestate():
-#     while True:
-#         for y, i in enumerate(no_players):
-#             print(f'player{i[name]} turn')
-#         time.sleep(10)
-#     return 'True'
+# @app.route('/playcard/<uuid:id>',methods = ['POST'])
+# def playcard(id):
+#     for i in no_players[str(id)]['hands']:
+#         if [i.rank,i.suit] == request.json['card']:
+#             a = no_players[str(id)]['hands'].pop(i)
+#             return (a.rank,a.suit)
+#     return 'false'
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

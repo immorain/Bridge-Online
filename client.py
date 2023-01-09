@@ -17,13 +17,18 @@ def post_name(name):
 
 def start_game():
     requests.get(f"{BASE_URL}/start")
-    requests.get(f"{BASE_URL}/gamestatestart")
+    #requests.get(f"{BASE_URL}/gamestatestart")
 
 def get_hands(UUID):
     response = requests.get(f"{BASE_URL}/gethands/{UUID}")
     text = ast.literal_eval(str(response.text))
     return text
 
+def play_cards(UUID,card):
+    dic = {}
+    dic['card']= card
+    response = requests.post(f"{BASE_URL}/playcard/{UUID}", json=card)
+    return response.text
 
 uuid1 = post_name('jackson')
 uuid2 = post_name('ian')
@@ -32,6 +37,8 @@ uuid4 = post_name('bel')
 
 start_game()
 hands = get_hands(uuid1)
-print(hands)
+a = play_cards(uuid1,hands[0])
+print(a)
+
 
 response =requests.get(f"{BASE_URL}/clear")
