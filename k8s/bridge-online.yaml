@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bridge-online
+spec:
+  replicas: 3                     # run 3 pods for horizontal scalability
+  selector:
+    matchLabels:
+      app: bridge-online
+  template:
+    metadata:
+      labels:
+        app: bridge-online
+    spec:
+      containers:
+        - name: bridge-online
+          image: <YOUR_DOCKER_IMAGE>       # e.g. ghcr.io/immorain/bridge-online:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: NODE_ENV
+              value: "production"
+            - name: REDIS_URL
+              value: "redis://redis:6379"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:6.2-alpine
+          ports:
+            - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bridge-online
+spec:
+  selector:
+    app: bridge-online
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP

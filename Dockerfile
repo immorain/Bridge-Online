@@ -1,8 +1,16 @@
+# Use a small Node base image
 FROM node:18-alpine
+
+# Create app directory
 WORKDIR /app
+
+# Install production dependencies first
 COPY package*.json ./
 RUN npm install --production
+
+# Copy the rest of the app
 COPY . .
-EXPOSE 3000
+
 ENV NODE_ENV=production
-CMD ["node", "server.js"]
+EXPOSE 3000
+CMD ["node","server.js"]
